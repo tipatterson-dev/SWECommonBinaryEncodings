@@ -60,6 +60,12 @@ mkdocs.yml          Docs site configuration
 docs.sh              Docs helper script
 ```
 
+## AI disclosure
+
+AI was used in the initial generation of the schema code in this repository, and the documentation under `docs/` (and the published site) is entirely AI-generated. The schemas have been reviewed against the OGC SWE Common 3.0 specification, but neither the code nor the docs should be treated as authoritative without independent verification against [OGC 24-014](https://docs.ogc.org/is/24-014/24-014.html).
+
+Use this project at your own risk. The authors assume no liability for any errors, omissions, or damages arising from its use — see [LICENSE](LICENSE) for the full disclaimer.
+
 ## License
 
 See [LICENSE](LICENSE) for details.
