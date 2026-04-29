@@ -12,7 +12,7 @@ All three schemas cover the same ten packages from the OGC specification and are
 
 ## Documentation
 
-Full docs are published at **https://tipatterson-dev.github.io/BinaryEncodings/**. To browse them locally:
+Full docs are published at **https://tipatterson-dev.github.io/SWECommonBinaryEncodings/**. To browse them locally:
 
 ```sh
 ./docs.sh
@@ -30,7 +30,7 @@ The static site is written to `site/`.
 
 ## Building schemas
 
-You need the compiler for whichever format you want to use (see [Installation](https://tipatterson-dev.github.io/BinaryEncodings/getting-started/installation/) for setup instructions). Then:
+You need the compiler for whichever format you want to use (see [Installation](https://tipatterson-dev.github.io/SWECommonBinaryEncodings/getting-started/installation/) for setup instructions). Then:
 
 ```sh
 make all          # build all three

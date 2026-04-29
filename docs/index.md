@@ -28,7 +28,7 @@ The OGC specification defines the data model in UML and provides XML Schema (XSD
 ## Project structure
 
 ```
-BinaryEncodings/
+SWECommonBinaryEncodings/
 ├── capnproto/
 │   ├── sweCommon3.capnp        ← root (Packages 5–8)
 │   ├── basic_types.capnp       ← Packages 1–2

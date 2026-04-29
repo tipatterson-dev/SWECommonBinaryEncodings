@@ -69,8 +69,8 @@ You need at least one of the three schema compilers installed. Install only the 
 Clone the repository and use the Makefile:
 
 ```sh
-git clone https://github.com/tipatterson-dev/BinaryEncodings.git
-cd BinaryEncodings
+git clone https://github.com/tipatterson-dev/SWECommonBinaryEncodings.git
+cd SWECommonBinaryEncodings
 ```
 
 Build all three at once:
