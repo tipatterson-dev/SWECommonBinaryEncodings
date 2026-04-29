@@ -1,0 +1,103 @@
+// OGC SWE Common Data Model 3.0 — FlatBuffers Schema — Encodings
+// Package 10: text, JSON, XML, and binary block encoding descriptors.
+// Standard: OGC 24-014  (https://docs.ogc.org/is/24-014/24-014.html)
+
+include "basic_types.fbs";
+
+namespace ogc.swecommon;
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 10 — Encodings
+// ═══════════════════════════════════════════════════════════════════════════
+
+table AbstractEncoding {
+  base:AbstractSWE;
+}
+
+table TextEncoding {
+  /// CSV-like delimited text encoding.
+  base:AbstractEncoding;
+  collapse_white_spaces:bool = false;
+  /// Default ".".
+  decimal_separator:string;
+  token_separator:string (required);
+  block_separator:string (required);
+}
+
+table JSONEncoding {
+  /// JSON array/object encoding (new in SWE Common 3.0).
+  base:AbstractEncoding;
+  records_as_arrays:bool = false;
+  vectors_as_arrays:bool = false;
+}
+
+table XMLEncoding {
+  /// XML element encoding.
+  base:AbstractEncoding;
+  /// URI — target namespace.
+  namespace:string;
+}
+
+enum ByteOrder : byte {
+  BigEndian = 0,
+  LittleEndian
+}
+
+enum ByteEncodingMethod : byte {
+  Raw = 0,
+  Base64
+}
+
+table BinaryComponent {
+  /// Encoding parameters for a single scalar value.
+  base:AbstractSWE;
+  /// URI — encryption method.
+  encryption:string;
+  significant_bits:uint;
+  bit_length:uint;
+  byte_length:uint;
+  /// URI — binary data type.
+  data_type:string (required);
+  /// Path reference to data component.
+  ref:string (required);
+}
+
+table BinaryBlock {
+  /// Encoding parameters for a block of values.
+  base:AbstractSWE;
+  /// URI — compression method.
+  compression:string;
+  /// URI — encryption method.
+  encryption:string;
+  padding_bytes_before:uint;
+  padding_bytes_after:uint;
+  byte_length:uint;
+  /// Path reference to aggregate component.
+  ref:string (required);
+}
+
+union BinaryMember {
+  BinaryComponent,
+  BinaryBlock
+}
+
+table BinaryEncoding {
+  /// Raw / base64 binary encoding with explicit member layout.
+  base:AbstractEncoding;
+  /// Required.
+  byte_order:ByteOrder;
+  /// Required.
+  byte_encoding:ByteEncodingMethod;
+  /// Total stream length in bytes (if known).
+  byte_length:ulong;
+  /// Min 1 element.
+  members:[BinaryMember] (required);
+}
+
+union AnyEncoding {
+  TextEncoding,
+  JSONEncoding,
+  XMLEncoding,
+  BinaryEncoding
+}

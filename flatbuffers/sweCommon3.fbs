@@ -1,0 +1,214 @@
+///////////////////////////////////////////////////////////////////////////////
+// OGC SWE Common Data Model 3.0 — FlatBuffers Schema
+// Standard: OGC 24-014  (https://docs.ogc.org/is/24-014/24-014.html)
+//
+// Root file: composite component types (Packages 5–8).  Independent
+// sub-schemas are included below:
+//
+//   basic_types.fbs         — Packages 1 & 2  (value types, abstract bases)
+//   scalar_components.fbs   — Packages 3 & 4  (scalar and range components)
+//   geometry.fbs            — Package 9        (ISO-19107 geometry)
+//   encodings.fbs           — Package 10       (text, JSON, XML, binary)
+//
+// Packages 5–8 are kept together here because AnyComponent, NamedComponent,
+// DataRecord, Vector, DataArray, DataChoice, and Matrix form a mutually-
+// referential cycle that cannot be split across FlatBuffers include files.
+///////////////////////////////////////////////////////////////////////////////
+
+include "basic_types.fbs";
+include "scalar_components.fbs";
+include "geometry.fbs";
+include "encodings.fbs";
+
+namespace ogc.swecommon;
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 5 — Polymorphic component unions
+// ═══════════════════════════════════════════════════════════════════════════
+
+union AnyScalarComponent {
+  Boolean,
+  Count,
+  Quantity,
+  Time,
+  Category,
+  Text
+}
+
+union AnySimpleComponent {
+  Boolean,
+  Count,
+  Quantity,
+  Time,
+  Category,
+  Text,
+  CountRange,
+  QuantityRange,
+  TimeRange,
+  CategoryRange
+}
+
+// Forward-declared tables used in AnyComponent are defined below.
+// FlatBuffers resolves forward references within the same compilation unit.
+
+union AnyComponent {
+  Boolean,
+  Count,
+  Quantity,
+  Time,
+  Category,
+  Text,
+  CountRange,
+  QuantityRange,
+  TimeRange,
+  CategoryRange,
+  DataRecord,
+  Vector,
+  DataArray,
+  Matrix,
+  DataChoice,
+  Geometry
+}
+
+union ComponentOrRef {
+  /// Inline component.
+  AnyComponentWrapper,
+  /// XLink-style by-reference association.
+  AssociationAttributeGroup
+}
+
+/// Wrapper needed because FlatBuffers unions cannot directly nest unions.
+table AnyComponentWrapper {
+  component:AnyComponent;
+}
+
+table NamedComponent {
+  /// Name token: [A-Za-z][A-Za-z0-9_-]*
+  name:string (required);
+  component:ComponentOrRef;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 6 — Record Components
+// ═══════════════════════════════════════════════════════════════════════════
+
+table DataRecord {
+  /// ISO-11404 Record — ordered sequence of named fields.
+  data_component:AbstractDataComponent;
+  fields:[NamedComponent] (required);
+}
+
+/// Coordinate may be Count, Quantity, or Time.
+union CoordinateComponent {
+  Count,
+  Quantity,
+  Time
+}
+
+table NamedCoordinate {
+  name:string (required);
+  coordinate:CoordinateComponent;
+}
+
+table Vector {
+  /// Mathematical vector — scalar coordinates in a reference frame.
+  data_component:AbstractDataComponent;
+  /// URI-reference (required).
+  reference_frame:string (required);
+  /// URI-reference — frame located by this vector.
+  local_frame:string;
+  coordinates:[NamedCoordinate] (required);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 7 — Choice Components
+// ═══════════════════════════════════════════════════════════════════════════
+
+table DataChoice {
+  /// Disjoint union — one of several named alternatives.
+  data_component:AbstractDataComponent;
+  /// Category component acting as discriminator in the data stream.
+  choice_value:Category;
+  items:[NamedComponent] (required);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 8 — Block Components (Arrays & Streams)
+// ═══════════════════════════════════════════════════════════════════════════
+
+table ElementCount {
+  base:AbstractSimpleComponent;
+  constraint:AllowedValues;
+  value:long;
+}
+
+union ElementCountOrRef {
+  ElementCount,
+  AssociationAttributeGroup
+}
+
+union EncodedValues {
+  /// Opaque encoded payload.
+  EncodedValuesInline,
+  /// External link.
+  AssociationAttributeGroup
+}
+
+table EncodedValuesInline {
+  data:[ubyte] (required);
+}
+
+table DataArray {
+  /// ISO-11404 Array — homogeneous collection of identically-typed elements.
+  data_component:AbstractDataComponent;
+  element_count:ElementCountOrRef;
+  element_type:NamedComponent;
+  encoding:AnyEncoding;
+  values:EncodedValues;
+}
+
+table Matrix {
+  /// Specialisation of DataArray with a reference frame
+  /// (e.g. rotation matrices or affine transforms).
+  data_component:AbstractDataComponent;
+  element_count:ElementCountOrRef;
+  element_type:NamedComponent;
+  encoding:AnyEncoding;
+  values:EncodedValues;
+  /// URI-reference.
+  reference_frame:string;
+  /// URI-reference.
+  local_frame:string;
+}
+
+table DataStream {
+  /// Descriptor for a stream of identically-structured observation records.
+  /// Note: extends AbstractSWEIdentifiable, NOT AbstractDataComponent.
+  identifiable:AbstractSWEIdentifiable;
+  element_type:NamedComponent (required);
+  encoding:AnyEncoding;
+  /// Out-of-band link to stream values.
+  values:AssociationAttributeGroup;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Root type — a top-level SWE Common object is either a component or stream.
+// ═══════════════════════════════════════════════════════════════════════════
+
+union SweCommonRoot {
+  AnyComponentWrapper,
+  DataStream
+}
+
+table SweCommonMessage {
+  root:SweCommonRoot;
+}
+
+root_type SweCommonMessage;
+file_identifier "SWEC";
+file_extension "swe";

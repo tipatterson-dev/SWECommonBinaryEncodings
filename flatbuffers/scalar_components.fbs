@@ -1,0 +1,104 @@
+// OGC SWE Common Data Model 3.0 — FlatBuffers Schema — Scalar & Range Components
+// Packages 3 & 4: simple scalar components and their range counterparts.
+// Standard: OGC 24-014  (https://docs.ogc.org/is/24-014/24-014.html)
+
+include "basic_types.fbs";
+
+namespace ogc.swecommon;
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 3 — Simple (Scalar) Components
+// ═══════════════════════════════════════════════════════════════════════════
+
+table Boolean {
+  base:AbstractSimpleComponent;
+  value:bool;
+}
+
+table Count {
+  base:AbstractSimpleComponent;
+  constraint:AllowedValues;
+  nil_values:[NilValueInteger];
+  value:long;
+}
+
+table Quantity {
+  base:AbstractSimpleComponent;
+  /// Unit of measure (required).
+  uom:UnitReference (required);
+  constraint:AllowedValues;
+  nil_values:[NilValueNumber];
+  value:NumberOrSpecial;
+}
+
+table Text {
+  base:AbstractSimpleComponent;
+  constraint:AllowedTokens;
+  nil_values:[NilValueText];
+  value:string;
+}
+
+table Category {
+  base:AbstractSimpleComponent;
+  /// URI — dictionary / code space.
+  code_space:string;
+  constraint:AllowedTokens;
+  nil_values:[NilValueText];
+  value:string;
+}
+
+table Time {
+  base:AbstractSimpleComponent;
+  /// ISO-8601 epoch origin.
+  reference_time:string;
+  /// URI — local temporal frame.
+  local_frame:string;
+  /// Temporal unit of measure (required).
+  uom:UnitReference (required);
+  constraint:AllowedTimes;
+  nil_values:[NilValueTime];
+  value:DateTimeOrNumber;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 4 — Range Components
+// ═══════════════════════════════════════════════════════════════════════════
+
+table CountRange {
+  base:AbstractSimpleComponent;
+  constraint:AllowedValues;
+  nil_values:[NilValueInteger];
+  low:long;
+  high:long;
+}
+
+table QuantityRange {
+  base:AbstractSimpleComponent;
+  uom:UnitReference (required);
+  constraint:AllowedValues;
+  nil_values:[NilValueNumber];
+  low:NumberOrSpecial;
+  high:NumberOrSpecial;
+}
+
+table TimeRange {
+  base:AbstractSimpleComponent;
+  reference_time:string;
+  local_frame:string;
+  uom:UnitReference (required);
+  constraint:AllowedTimes;
+  nil_values:[NilValueTime];
+  low:DateTimeOrNumber;
+  high:DateTimeOrNumber;
+}
+
+table CategoryRange {
+  base:AbstractSimpleComponent;
+  code_space:string;
+  constraint:AllowedTokens;
+  nil_values:[NilValueText];
+  low:string;
+  high:string;
+}

@@ -1,0 +1,164 @@
+// OGC SWE Common Data Model 3.0 — FlatBuffers Schema — Basic Types
+// Packages 1 & 2: value types and abstract data component hierarchy.
+// Standard: OGC 24-014  (https://docs.ogc.org/is/24-014/24-014.html)
+
+namespace ogc.swecommon;
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 1 — Basic Types
+// ═══════════════════════════════════════════════════════════════════════════
+
+table AbstractSWE {
+  /// Referenceable ID (URI fragment).
+  id:string;
+}
+
+table AbstractSWEIdentifiable {
+  base:AbstractSWE;
+  /// Short human-readable name.
+  label:string;
+  /// Longer human-readable description.
+  description:string;
+}
+
+table UnitReference {
+  /// Human-readable unit label.
+  label:string;
+  /// Preferred display symbol.
+  symbol:string;
+  /// UCUM code.
+  code:string;
+  /// URI to unit definition.
+  href:string;
+}
+
+// ── Number / DateTime specials ─────────────────────────────────────────
+
+enum SpecialValue : byte {
+  None = 0,
+  NaN,
+  PosInf,
+  NegInf
+}
+
+table NumberOrSpecial {
+  number:double;
+  special:SpecialValue = None;
+}
+
+enum DateTimeKind : byte {
+  DateTime = 0,
+  Number,
+  Special
+}
+
+table DateTimeOrNumber {
+  kind:DateTimeKind = DateTime;
+  /// ISO-8601 date-time string (used when kind == DateTime).
+  date_time:string;
+  /// Numeric value (used when kind == Number).
+  number:double;
+  /// Special sentinel (used when kind == Special).
+  special:SpecialValue = None;
+}
+
+// ── Nil values ─────────────────────────────────────────────────────────
+
+table NilValueText {
+  /// URI — reason for the nil sentinel.
+  reason:string (required);
+  value:string (required);
+}
+
+table NilValueInteger {
+  reason:string (required);
+  value:long;
+}
+
+table NilValueNumber {
+  reason:string (required);
+  value:NumberOrSpecial (required);
+}
+
+table NilValueTime {
+  reason:string (required);
+  value:DateTimeOrNumber (required);
+}
+
+// ── Constraints ────────────────────────────────────────────────────────
+
+table NumberInterval {
+  low:NumberOrSpecial (required);
+  high:NumberOrSpecial (required);
+}
+
+table AllowedValues {
+  /// Enumerated permitted values.
+  values:[NumberOrSpecial];
+  /// Inclusive numeric intervals.
+  intervals:[NumberInterval];
+  /// Significant figures (1–40; 0 = unset).
+  significant_figures:ubyte = 0;
+}
+
+enum AllowedTokensKind : byte {
+  Values = 0,
+  Pattern
+}
+
+table AllowedTokens {
+  kind:AllowedTokensKind = Values;
+  /// Enumerated permitted tokens (when kind == Values).
+  values:[string];
+  /// Regex pattern (when kind == Pattern).
+  pattern:string;
+}
+
+table TimeInterval {
+  low:DateTimeOrNumber (required);
+  high:DateTimeOrNumber (required);
+}
+
+table AllowedTimes {
+  /// Enumerated permitted time values.
+  values:[DateTimeOrNumber];
+  /// Inclusive temporal intervals.
+  intervals:[TimeInterval];
+  significant_figures:ubyte = 0;
+}
+
+// ── Associations ────────────────────────────────────────────────────────
+
+table AssociationAttributeGroup {
+  /// URI-reference (required).
+  href:string (required);
+  /// URI — role.
+  role:string;
+  /// URI — arcrole.
+  arcrole:string;
+  title:string;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 2 — Abstract Data Component hierarchy
+// ═══════════════════════════════════════════════════════════════════════════
+
+table AbstractDataComponent {
+  identifiable:AbstractSWEIdentifiable;
+  /// Can value change externally?
+  updatable:bool = false;
+  /// Can data be omitted in stream?
+  optional:bool = false;
+  /// URI — semantic link to observed property.
+  definition:string;
+}
+
+table AbstractSimpleComponent {
+  data_component:AbstractDataComponent;
+  /// URI-reference — CRS or temporal reference frame.
+  reference_frame:string;
+  /// CRS axis identifier.
+  axis_id:string;
+}

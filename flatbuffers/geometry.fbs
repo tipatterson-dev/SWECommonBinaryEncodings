@@ -1,0 +1,44 @@
+// OGC SWE Common Data Model 3.0 — FlatBuffers Schema — Geometry Components
+// Package 9: ISO-19107 geometry components (new in SWE Common 3.0).
+// Standard: OGC 24-014  (https://docs.ogc.org/is/24-014/24-014.html)
+
+include "basic_types.fbs";
+
+namespace ogc.swecommon;
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Package 9 — Geometry Components  (new in SWE Common 3.0)
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum GeometryType : byte {
+  Point = 0,
+  MultiPoint,
+  LineString,
+  MultiLineString,
+  Polygon,
+  MultiPolygon
+}
+
+table GeoJsonGeometry {
+  /// Simplified GeoJSON Geometry for wire use.
+  type:GeometryType;
+  /// Packed float64 coordinate data.
+  coordinates:[ubyte];
+  /// Full GeoJSON coordinates as text fallback.
+  coordinates_json:string;
+}
+
+table GeometryConstraint {
+  geom_types:[GeometryType];
+}
+
+table Geometry {
+  /// ISO-19107 geometry embedded in a SWE Common data structure.
+  data_component:AbstractDataComponent;
+  constraint:GeometryConstraint;
+  nil_values:[NilValueText];
+  /// URI — coordinate reference system (required).
+  srs:string (required);
+  value:GeoJsonGeometry;
+}

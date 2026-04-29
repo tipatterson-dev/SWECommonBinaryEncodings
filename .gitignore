@@ -1,0 +1,4 @@
+gen/
+site/
+.venv/
+.venv-docs/

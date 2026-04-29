@@ -1,0 +1,88 @@
+site_name: OGC SWE Common 3.0 — Binary Encodings
+site_description: >-
+  Binary serialization schemas (Cap'n Proto, FlatBuffers, Protocol Buffers)
+  for the OGC SWE Common Data Model 3.0 (OGC 24-014).
+site_url: https://cr31.github.io/BinaryEncodings/
+repo_url: https://github.com/cr31/BinaryEncodings
+repo_name: cr31/BinaryEncodings
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cr31/BinaryEncodings
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quickstart.md
+  - Conceptual Guide:
+      - Overview: guide/overview.md
+      - Basic Types (Pkg 1): guide/basic-types.md
+      - Abstract Components (Pkg 2): guide/abstract-components.md
+      - Scalar Components (Pkg 3): guide/scalar-components.md
+      - Range Components (Pkg 4): guide/range-components.md
+      - Polymorphic Unions (Pkg 5): guide/unions.md
+      - Records & Vectors (Pkg 6): guide/records-vectors.md
+      - Choice Components (Pkg 7): guide/choice.md
+      - Arrays & Streams (Pkg 8): guide/arrays-streams.md
+      - Geometry (Pkg 9): guide/geometry.md
+      - Encodings (Pkg 10): guide/encodings.md
+  - Encoding Comparison: comparison.md
+  - Reference:
+      - Type Reference: reference/types.md
+      - Design Decisions: reference/design-decisions.md
+  - Architecture: architecture.md
