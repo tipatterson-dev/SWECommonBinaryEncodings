@@ -2,9 +2,9 @@ site_name: OGC SWE Common 3.0 — Binary Encodings
 site_description: >-
   Binary serialization schemas (Cap'n Proto, FlatBuffers, Protocol Buffers)
   for the OGC SWE Common Data Model 3.0 (OGC 24-014).
-site_url: https://cr31.github.io/BinaryEncodings/
-repo_url: https://github.com/cr31/BinaryEncodings
-repo_name: cr31/BinaryEncodings
+site_url: https://tipatterson-dev.github.io/BinaryEncodings/
+repo_url: https://github.com/tipatterson-dev/BinaryEncodings
+repo_name: tipatterson-dev/BinaryEncodings
 
 theme:
   name: material
@@ -62,7 +62,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/cr31/BinaryEncodings
+      link: https://github.com/tipatterson-dev/BinaryEncodings
 
 nav:
   - Home: index.md
