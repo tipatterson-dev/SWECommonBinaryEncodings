@@ -2,3 +2,4 @@ gen/
 site/
 .venv/
 .venv-docs/
+.idea/
